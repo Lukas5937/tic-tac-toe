@@ -35,19 +35,25 @@ player2 = createPlayer("Marc", "o");
 
 // playGame Object / gameFlowFactory
 const gameFlowFactory = function() {
-    let isTurn = player1;
-    const playRound = function() {
-    board[0][0] = isTurn.marker;
-    isTurn === player1 ? isTurn = player2 : isTurn = player1;
-    };
-    return {playRound};
+    let currentMarker = player1.marker;
+    const getCurrentMarker = () => currentMarker;
+    const changeMarker = () => {
+        if (currentMarker === player1.marker) {
+            return currentMarker = player2.marker}
+        else return currentMarker = player1.marker};
+    const playRound = () => board[0][0] = currentMarker;
+    return {playRound, changeMarker, getCurrentMarker};
 };
 const game = gameFlowFactory();
-game.playRound();
-console.log(board);
-game.playRound();
-console.log(board);
 
+game.playRound();
+console.log(board);
+game.getCurrentMarker();
+console.log(player1.marker);
+game.changeMarker();
+game.getCurrentMarker();
+game.playRound();
+console.log(board);
 
 
 
