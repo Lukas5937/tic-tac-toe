@@ -15,13 +15,14 @@ const boardFactory = (function() {
 
 const board = boardFactory.boardArray;
 
-/* this can be deleted later, it just sets names for the cells for better understanding.
-board[0] = ["hi", "os", "his"];
-board[1] = ["his", "his", "hi"];
-board[2] = ["hi", "hsi", "hi"];
+// this can be deleted later, it just sets names for the cells for better understanding.
+board[0] = ["hsi", "hi", "hi"];
+board[1] = ["his", "hsi", "hi"];
+board[2] = ["hi", "hsi", "hsi"];
 //board[0] = ["r1 c1", "r1 c2", "r1 c3"];
 //board[1] = ["r2 c1", "r2 c2", "r2 c3"];
-//board[2] = ["r3 c1", "r3 c2", "r3 c3"]; */
+//board[2] = ["r3 c1", "r3 c2", "r3 c3"];
+console.log(board);
 
 
 
@@ -30,9 +31,10 @@ const createPlayer = function(name, marker) {
     return {name, marker}
 }
 
-player1 = createPlayer("Peter", "x");
-player2 = createPlayer("Marc", "o");
+const player1 = createPlayer("Peter", "x");
+const player2 = createPlayer("Marc", "o");
 
+/*
 // playGame Object / gameFlowFactory
 const gameFlowFactory = function() {
     let currentMarker = player1.marker;
@@ -41,58 +43,70 @@ const gameFlowFactory = function() {
         if (currentMarker === player1.marker) {
             return currentMarker = player2.marker}
         else return currentMarker = player1.marker};
-    const playRound = () => board[0][0] = currentMarker;
-    return {playRound, changeMarker, getCurrentMarker};
+    const setMarker = () => board[0][0] = currentMarker;
+    const playRound = function() {
+        getCurrentMarker();
+        setMarker();
+        changeMarker();
+        console.log(board);
+    }
+    return {playRound};
 };
-const game = gameFlowFactory();
-
-game.playRound();
-console.log(board);
-game.getCurrentMarker();
-console.log(player1.marker);
-game.changeMarker();
-game.getCurrentMarker();
-game.playRound();
-console.log(board);
 
 
 
-//the checkWinner function will check if the game is over.
+const playGame = function() {
+    const {playRound} = gameFlowFactory();
+    playRound();
+    };
+
+*/
+
+
+    const controlArrayFactory = function() {
+        const rowArray = board;
+        const colArray = [];
+        for (i = 0; i < boardFactory.cols; i++) {
+            const column = board.map(row => row[i]);
+            colArray.push(column);
+        };
+        let diag1 = [];    
+        for (i = 0; i < boardFactory.rows; i++) {
+            const diagCell = board[i][i];
+            diag1.push(diagCell);
+        };
+        let diag2 = []; 
+        for (i = 0; i < boardFactory.rows; i++) {
+            const diagCell = board[i][(boardFactory.rows-1)-i];
+            diag2.push(diagCell);
+        };
+        const diagArray = [diag1, diag2];
+        return {rowArray, colArray, diagArray}
+    };
+
 const checkWinner = function() {
-    // here the Arrays for rows, columns and diagonals are created.
-    const rowArray = board;
-    const colArray = [];
-    const diag1 = [];
-    const diag2 = [];
-
-    for (i = 0; i < boardFactory.cols; i++) {
-        const column = board.map(row => row[i]);
-        colArray.push(column);
-    };
-
-    for (i = 0; i < boardFactory.rows; i++) {
-        const diagCell = board[i][i];
-        diag1.push(diagCell);
-    };
-
-    for (i = 0; i < boardFactory.rows; i++) {
-        const diagCell = board[i][(boardFactory.rows-1)-i];
-        diag2.push(diagCell);
-    };
-    const diagArray = [diag1, diag2];
-
-    //now it will check if there is a winner
-    gameOver = false;
-    const checkIfEqual = function(array) {
+    const {rowArray, colArray, diagArray} = controlArrayFactory();
+    let winnerMarker = "";
+    const checkArrayMethod = function(array) {
+        //let gameOver = false;
         array.forEach(item => {
             let isEqual = item.every(cell => cell === item[0]);
-            if (isEqual) {gameOver = true};
+            if (isEqual) {
+                //gameOver = true;
+                winnerMarker = item[0];
+            };
         });
     };
-    checkIfEqual(rowArray);
-    checkIfEqual(colArray);
-    checkIfEqual(diagArray);
-    console.log(gameOver);
+    const checkArrays = function() {
+        checkArrayMethod(rowArray);
+        checkArrayMethod(colArray);
+        checkArrayMethod(diagArray);
     };
+    const checkWinnerMarker = () => winnerMarker;
+    return {checkArrays, checkWinnerMarker}
+};
 
-checkWinner();
+const check = checkWinner();
+check.checkArrays();
+test = check.checkWinnerMarker();
+console.log(test);
