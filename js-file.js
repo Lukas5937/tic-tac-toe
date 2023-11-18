@@ -16,9 +16,9 @@ const boardFactory = (function() {
 const board = boardFactory.boardArray;
 
 // this can be deleted later, it just sets names for the cells for better understanding.
-board[0] = ["hsi", "hi", "hi"];
-board[1] = ["his", "hsi", "hi"];
-board[2] = ["hi", "hsi", "hsi"];
+board[0] = ["o", "o", "x"];
+board[1] = ["his", "o", "hi"];
+board[2] = ["hi", "hsi", "o"];
 //board[0] = ["r1 c1", "r1 c2", "r1 c3"];
 //board[1] = ["r2 c1", "r2 c2", "r2 c3"];
 //board[2] = ["r3 c1", "r3 c2", "r3 c3"];
@@ -27,12 +27,22 @@ console.log(board);
 
 
 //createPlayer factory Function
-const createPlayer = function(name, marker) {
-    return {name, marker}
-}
+const playerFactory = function() {
+    let marker = "x";
+    const getMarker = () => marker;
+    const changeMarker = () => marker = "o";
+    return function createPlayer(name) {
+        getMarker()
+        const playerObject = {name, marker};
+        changeMarker();
+        return playerObject;
+    };};
 
-const player1 = createPlayer("Peter", "x");
-const player2 = createPlayer("Marc", "o");
+const newPlayer = playerFactory();
+const player1 = newPlayer("Peter");
+const player2 = newPlayer("Marc");
+const playerArray = [player1, player2];
+console.log(playerArray);
 
 /*
 // playGame Object / gameFlowFactory
@@ -53,8 +63,6 @@ const gameFlowFactory = function() {
     return {playRound};
 };
 
-
-
 const playGame = function() {
     const {playRound} = gameFlowFactory();
     playRound();
@@ -63,9 +71,11 @@ const playGame = function() {
 */
 
 
+const checkWinner = function() {
+    const rowArray = board;
+    const colArray = [];
+    let diagArray = [];
     const controlArrayFactory = function() {
-        const rowArray = board;
-        const colArray = [];
         for (i = 0; i < boardFactory.cols; i++) {
             const column = board.map(row => row[i]);
             colArray.push(column);
@@ -80,14 +90,13 @@ const playGame = function() {
             const diagCell = board[i][(boardFactory.rows-1)-i];
             diag2.push(diagCell);
         };
-        const diagArray = [diag1, diag2];
-        return {rowArray, colArray, diagArray}
+        diagArray = [diag1, diag2];
+        return controlArrays = {rowArray, colArray, diagArray}
     };
-
-const checkWinner = function() {
-    const {rowArray, colArray, diagArray} = controlArrayFactory();
+    controlArrayFactory();
     let winnerMarker = "";
-    const checkArrayMethod = function(array) {
+    const checkWinnerMarker = () => winnerMarker;
+    const checkArrayFunction = function(array) {
         //let gameOver = false;
         array.forEach(item => {
             let isEqual = item.every(cell => cell === item[0]);
@@ -98,15 +107,19 @@ const checkWinner = function() {
         });
     };
     const checkArrays = function() {
-        checkArrayMethod(rowArray);
-        checkArrayMethod(colArray);
-        checkArrayMethod(diagArray);
+    checkArrayFunction(rowArray);
+    checkArrayFunction(colArray);
+    checkArrayFunction(diagArray);
     };
-    const checkWinnerMarker = () => winnerMarker;
-    return {checkArrays, checkWinnerMarker}
+    checkArrays();
+    const showWinner = function() {
+        if (winnerMarker !== "") {
+            const winnerObject = playerArray.filter(player => player.marker === winnerMarker);
+            const winner = winnerObject[0].name;
+            console.log(winner);
+            return winner
+        };
+    };
+    return showWinner();
 };
-
-const check = checkWinner();
-check.checkArrays();
-test = check.checkWinnerMarker();
-console.log(test);
+checkWinner();
