@@ -1,5 +1,5 @@
 const boardFactory = (function() {
-        const container = document.querySelector(".container");
+        const boardContainer = document.querySelector(".board-container");
         const boardArray = [];
         const rows = 3;
         const cols = 3;
@@ -11,7 +11,7 @@ const boardFactory = (function() {
                     boardCell = document.createElement("div");
                     boardArray[i].push(boardCell);
                     boardCell.classList.toggle("cell");
-                    container.appendChild(boardCell);
+                    boardContainer.appendChild(boardCell);
                 };
             };};
         createBoard();  
@@ -87,7 +87,7 @@ const checkWinner = function() {
     checkArrayFunction(diagArray);
     };
     checkArrays();
-    const showWinner = function() {
+    const updateScore = function() {
         checkArrays();
         //checkWinnerMarker();
         console.log(winnerMarker)
@@ -96,14 +96,29 @@ const checkWinner = function() {
             console.log(winnerObject);
             const winner = winnerObject[0].name;
             console.log(winner);
-            return winner 
-        }
+            let scorePlayer1 = 0;
+            let scorePlayer2 = 0;
+            const scorePlayer1Element = document.createElement("p");
+            const scorePlayer2Element = document.createElement("p");
+            if (winner === player1.name) {
+                scorePlayer1 += 1;}
+            else if (winner === player2.name) {
+                scorePlayer2 += 1;}
+            scorePlayer1Element.textContent = scorePlayer1;
+            scorePlayer2Element.textContent = scorePlayer2;
+            const scoreContainer = document.querySelector(".score-container");
+            scoreContainer.appendChild(scorePlayer1Element);
+            scoreContainer.appendChild(scorePlayer2Element);
+
+            console.log(scorePlayer1);
+            console.log(scorePlayer2);  
     };
-    return {showWinner};
+    };
+    return {updateScore};
 };
 
 const playGame = function() {
-    const {showWinner} = checkWinner();
+    const {updateScore} = checkWinner();
     let currentMarker = player1.marker; 
     //const getCurrentMarker = () => currentMarker;
     const changeMarker = () => {
@@ -111,13 +126,13 @@ const playGame = function() {
             return currentMarker = player2.marker}
         else {return currentMarker = player1.marker}
         };
-    const cells = document.querySelectorAll(".container > div");
+    const cells = document.querySelectorAll(".board-container > div");
     const playRound = function() {
         cells.forEach((cell) => cell.addEventListener("click", () => {
             if (cell.textContent === "") {
                 cell.textContent = currentMarker;
                 changeMarker();
-                showWinner();
+                updateScore();
             };}));
     };
     return {playRound}
