@@ -15,7 +15,7 @@ const boardFactory = (function() {
                 };
             };};
         createBoard();  
-    return {boardArray};
+    return {boardArray, rows, cols};
 })();
 
 const board = boardFactory.boardArray;
@@ -40,29 +40,11 @@ const playerFactory = function() {
         return playerObject;
     };};
 
-const playGame = function() {
-    let currentMarker = player1.marker; 
-    //const getCurrentMarker = () => currentMarker;
-    const changeMarker = () => {
-        if (currentMarker === player1.marker) {
-            return currentMarker = player2.marker}
-        else {return currentMarker = player1.marker}
-        };
-    const cells = document.querySelectorAll(".container > div");
-    cells.forEach((cell) => cell.addEventListener("click", () => {
-        if (cell.textContent === "") {
-            cell.textContent = currentMarker;
-            changeMarker()
-        };}));
-};
-
 const newPlayer = playerFactory();
 const player1 = newPlayer("Peter");
 const player2 = newPlayer("Marc");
 const playerArray = [player1, player2];
 console.log(playerArray);
-
-playGame();
 
 const checkWinner = function() {
     const rowArray = board;
@@ -90,28 +72,56 @@ const checkWinner = function() {
     let winnerMarker = "";
     const checkWinnerMarker = () => winnerMarker;
     const checkArrayFunction = function(array) {
-        //let gameOver = false;
         array.forEach(item => {
-            let isEqual = item.every(cell => cell === item[0]);
-            if (isEqual) {
-                //gameOver = true;
-                winnerMarker = item[0];
-            };
-        });
-    };
+            if (item[0].innerText != "") {
+                const isEqual = (cell) => cell.innerText === item[0].innerText;
+                const allEqual = item.every(isEqual)
+                if (allEqual) {
+                    winnerMarker = item[0].innerText;
+                    console.log(winnerMarker)};
+                }});};
     const checkArrays = function() {
     checkArrayFunction(rowArray);
+    console.log(rowArray);
     checkArrayFunction(colArray);
     checkArrayFunction(diagArray);
     };
     checkArrays();
     const showWinner = function() {
+        checkArrays();
+        //checkWinnerMarker();
+        console.log(winnerMarker)
         if (winnerMarker !== "") {
             const winnerObject = playerArray.filter(player => player.marker === winnerMarker);
+            console.log(winnerObject);
             const winner = winnerObject[0].name;
             console.log(winner);
-            return winner
-        };
+            return winner 
+        }
     };
-    return showWinner();
+    return {showWinner};
 };
+
+const playGame = function() {
+    const {showWinner} = checkWinner();
+    let currentMarker = player1.marker; 
+    //const getCurrentMarker = () => currentMarker;
+    const changeMarker = () => {
+        if (currentMarker === player1.marker) {
+            return currentMarker = player2.marker}
+        else {return currentMarker = player1.marker}
+        };
+    const cells = document.querySelectorAll(".container > div");
+    const playRound = function() {
+        cells.forEach((cell) => cell.addEventListener("click", () => {
+            if (cell.textContent === "") {
+                cell.textContent = currentMarker;
+                changeMarker();
+                showWinner();
+            };}));
+    };
+    return {playRound}
+};
+
+game = playGame();
+game.playRound();
