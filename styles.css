@@ -1,0 +1,13 @@
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 200px);
+    grid-template-rows: repeat(3, 200px);
+    justify-items: start;
+}
+
+.cell {
+    box-sizing: border-box;
+    border: 2px solid red;
+    height: 200px; 
+    width: 200px;
+}
