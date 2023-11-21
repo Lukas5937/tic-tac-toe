@@ -1,34 +1,3 @@
-const boardFactory = (function() {
-        const boardContainer = document.querySelector(".board-container");
-        const boardArray = [];
-        const rows = 3;
-        const cols = 3;
-        let boardCell = "";
-        const createBoard = function() {
-            for (let i = 0; i < rows; i++) {
-                boardArray[i] = [];
-                for (let j = 0; j < cols; j++) {
-                    boardCell = document.createElement("div");
-                    boardArray[i].push(boardCell);
-                    boardCell.classList.toggle("cell");
-                    boardContainer.appendChild(boardCell);
-                };
-            };};
-        createBoard();  
-    return {boardArray, rows, cols};
-})();
-
-const board = boardFactory.boardArray;
-console.log(board);
-
-// this can be deleted later, it just sets names for the cells for better understanding.
-//board[0] = ["s", "o", "x"];
-//board[1] = ["his", "o", "hi"];
-//board[2] = ["hi", "hsi", "o"];
-//board[0] = ["r1 c1", "r1 c2", "r1 c3"];
-//board[1] = ["r2 c1", "r2 c2", "r2 c3"];
-//board[2] = ["r3 c1", "r3 c2", "r3 c3"];
-
 const playerFactory = function() {
     let marker = "x";
     const getMarker = () => marker;
@@ -45,6 +14,69 @@ const player1 = newPlayer("Peter");
 const player2 = newPlayer("Marc");
 const playerArray = [player1, player2];
 console.log(playerArray);
+
+const boardFactory = (function() {
+    const boardContainer = document.querySelector(".board-container");
+    const boardArray = [];
+    const rows = 3;
+    const cols = 3;
+    let boardCell = "";
+    const createBoard = function() {
+        for (let i = 0; i < rows; i++) {
+            boardArray[i] = [];
+            for (let j = 0; j < cols; j++) {
+                boardCell = document.createElement("div");
+                boardArray[i].push(boardCell);
+                boardCell.classList.toggle("cell");
+                boardContainer.appendChild(boardCell);
+            };
+        };
+    };
+    createBoard();
+    return {boardArray, rows, cols};
+})();
+
+const board = boardFactory.boardArray;
+console.log(board);
+
+const scoreFactory = (function() {
+    const scoreContainer = document.querySelector(".score-container");
+    const scorePlayer1Element = document.createElement("p");
+    const scorePlayer2Element = document.createElement("p");
+    let scorePlayer1 = 0;
+    let scorePlayer2 = 0;
+    scorePlayer1Element.textContent = `${player1.name}: ${scorePlayer1}`;
+    scorePlayer2Element.textContent = `${player2.name}: ${scorePlayer2}`;
+    const createScore = function() {
+        scoreContainer.appendChild(scorePlayer1Element);
+        scoreContainer.appendChild(scorePlayer2Element);
+    };
+    const addScore = function(winner) {
+        if (winner === player1.name) {
+            scorePlayer1 += 1;}
+        else if (winner === player2.name) {
+            scorePlayer2 += 1;}
+        console.log(scorePlayer1);
+        console.log(scorePlayer2);
+    };
+    const updateScore = function() {
+        scorePlayer1Element.textContent = `${player1.name}: ${scorePlayer1}`;
+        scorePlayer2Element.textContent = `${player2.name}: ${scorePlayer2}`;
+    };
+    createScore()
+    return {addScore, updateScore}
+})();
+
+const newScore = scoreFactory.addScore;
+const showScore = scoreFactory.updateScore;
+
+// this can be deleted later, it just sets names for the cells for better understanding.
+//board[0] = ["s", "o", "x"];
+//board[1] = ["his", "o", "hi"];
+//board[2] = ["hi", "hsi", "o"];
+//board[0] = ["r1 c1", "r1 c2", "r1 c3"];
+//board[1] = ["r2 c1", "r2 c2", "r2 c3"];
+//board[2] = ["r3 c1", "r3 c2", "r3 c3"];
 
 const checkWinner = function() {
     const rowArray = board;
@@ -70,7 +102,6 @@ const checkWinner = function() {
     };
     controlArrayFactory();
     let winnerMarker = "";
-    const checkWinnerMarker = () => winnerMarker;
     const checkArrayFunction = function(array) {
         array.forEach(item => {
             if (item[0].innerText != "") {
@@ -78,47 +109,30 @@ const checkWinner = function() {
                 const allEqual = item.every(isEqual)
                 if (allEqual) {
                     winnerMarker = item[0].innerText;
-                    console.log(winnerMarker)};
-                }});};
+                }}});};
     const checkArrays = function() {
-    checkArrayFunction(rowArray);
-    console.log(rowArray);
-    checkArrayFunction(colArray);
-    checkArrayFunction(diagArray);
+        checkArrayFunction(rowArray);
+        checkArrayFunction(colArray);
+        checkArrayFunction(diagArray);
     };
-    checkArrays();
-    const updateScore = function() {
+    const showWinner = function() {
         checkArrays();
-        //checkWinnerMarker();
-        console.log(winnerMarker)
         if (winnerMarker !== "") {
             const winnerObject = playerArray.filter(player => player.marker === winnerMarker);
             console.log(winnerObject);
             const winner = winnerObject[0].name;
             console.log(winner);
-            let scorePlayer1 = 0;
-            let scorePlayer2 = 0;
-            const scorePlayer1Element = document.createElement("p");
-            const scorePlayer2Element = document.createElement("p");
-            if (winner === player1.name) {
-                scorePlayer1 += 1;}
-            else if (winner === player2.name) {
-                scorePlayer2 += 1;}
-            scorePlayer1Element.textContent = scorePlayer1;
-            scorePlayer2Element.textContent = scorePlayer2;
-            const scoreContainer = document.querySelector(".score-container");
-            scoreContainer.appendChild(scorePlayer1Element);
-            scoreContainer.appendChild(scorePlayer2Element);
-
-            console.log(scorePlayer1);
-            console.log(scorePlayer2);  
-    };
-    };
-    return {updateScore};
+            newScore(winner);
+            showScore();
+            return winner
+        };
+    }
+    const resetWinnerMarker = () => winnerMarker = "";
+    return {showWinner, resetWinnerMarker};
 };
 
 const playGame = function() {
-    const {updateScore} = checkWinner();
+    const {showWinner, winnerMarker, resetWinnerMarker} = checkWinner();
     let currentMarker = player1.marker; 
     //const getCurrentMarker = () => currentMarker;
     const changeMarker = () => {
@@ -132,11 +146,22 @@ const playGame = function() {
             if (cell.textContent === "") {
                 cell.textContent = currentMarker;
                 changeMarker();
-                updateScore();
+                showWinner();
             };}));
     };
-    return {playRound}
+    const newRoundButton = document.querySelector(".new-round");
+    const newRound = function() {
+        newRoundButton.addEventListener("click", () => {
+            cells.forEach((cell) => cell.textContent = "");
+            currentMarker = player1.marker;
+            resetWinnerMarker();
+            console.log(winnerMarker);
+        });
+        
+    }
+    return {playRound, newRound}
 };
 
 game = playGame();
 game.playRound();
+game.newRound();
