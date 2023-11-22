@@ -8,6 +8,17 @@
     <script src="./js-file.js" defer></script>
 </head>
 <body>
+    <form action="www.example.com" method="post">
+        <div class="input-wrapper">
+            <label for="player1">Player 1</label>
+            <input type="text" id="player1" name="player1">
+        </div>
+        <div class="input-wrapper">
+            <label for="player2">Player 2</label>
+            <input type="text" id="player2" name="player2">
+        </div>
+        <button id="start-game-button" type="button">Start game</button>
+    </form>
     <div class="score-container"></div>
     <div class="board-container"></div>  
     <button class="new-round">New round</button>

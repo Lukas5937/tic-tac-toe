@@ -2,18 +2,31 @@ const playerFactory = function() {
     let marker = "x";
     const getMarker = () => marker;
     const changeMarker = () => marker = "o";
-    return function createPlayer(name) {
+    return createPlayer = function() {
         getMarker()
-        const playerObject = {name, marker};
+        const playerObject = {name: "", marker};
         changeMarker();
         return playerObject;
-    };};
+    };
+};
+
 
 const newPlayer = playerFactory();
-const player1 = newPlayer("Peter");
-const player2 = newPlayer("Marc");
+const player1 = newPlayer();
+const player2 = newPlayer();
 const playerArray = [player1, player2];
-console.log(playerArray);
+
+const setPlayerName = function() {
+    const inputPlayer1 = document.querySelector("#player1");
+    const inputPlayer2 = document.querySelector("#player2");
+    const startGameButton = document.querySelector("#start-game-button");
+    startGameButton.addEventListener("click", () => {
+        player1.name = inputPlayer1.value;
+        player2.name = inputPlayer2.value;
+        console.log(playerArray);
+    });
+};
+setPlayerName();
 
 const boardFactory = (function() {
     const boardContainer = document.querySelector(".board-container");
@@ -37,7 +50,6 @@ const boardFactory = (function() {
 })();
 
 const board = boardFactory.boardArray;
-console.log(board);
 
 const scoreFactory = (function() {
     const scoreContainer = document.querySelector(".score-container");
@@ -69,14 +81,6 @@ const scoreFactory = (function() {
 
 const newScore = scoreFactory.addScore;
 const showScore = scoreFactory.updateScore;
-
-// this can be deleted later, it just sets names for the cells for better understanding.
-//board[0] = ["s", "o", "x"];
-//board[1] = ["his", "o", "hi"];
-//board[2] = ["hi", "hsi", "o"];
-//board[0] = ["r1 c1", "r1 c2", "r1 c3"];
-//board[1] = ["r2 c1", "r2 c2", "r2 c3"];
-//board[2] = ["r3 c1", "r3 c2", "r3 c3"];
 
 const checkWinner = function() {
     const rowArray = board;
@@ -134,7 +138,6 @@ const checkWinner = function() {
 const playGame = function() {
     const {showWinner, winnerMarker, resetWinnerMarker} = checkWinner();
     let currentMarker = player1.marker; 
-    //const getCurrentMarker = () => currentMarker;
     const changeMarker = () => {
         if (currentMarker === player1.marker) {
             return currentMarker = player2.marker}
